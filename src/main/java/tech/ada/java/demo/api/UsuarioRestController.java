@@ -1,11 +1,15 @@
 package tech.ada.java.demo.api;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import tech.ada.java.demo.api.exception.NaoEncontradoException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -29,11 +33,11 @@ public class UsuarioRestController {
         return usuarioList.stream()
                 .filter(usuario -> usuario.getUuid().equals(uuid))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new NaoEncontradoException("Não foi possível encontrar o Usuário."));
     }
 
     @PostMapping("/")
-    public Usuario criarUsuario(@RequestBody Usuario usuario){
+    public Usuario criarUsuario(@RequestBody @Valid Usuario usuario){
         this.usuarioList.add(usuario);
         return usuario;
     }
@@ -45,7 +49,7 @@ public class UsuarioRestController {
     }
 
     @PutMapping ("/{id}")
-    public Usuario atualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioNovo){
+    public Usuario atualizarUsuario(@PathVariable UUID id, @RequestBody @Valid Usuario usuarioNovo){
         Usuario usuario = this.buscarPorUuid(id);
         this.usuarioList.set(this.usuarioList.indexOf(usuario), usuarioNovo);
         return usuarioNovo;
@@ -63,5 +67,4 @@ public class UsuarioRestController {
     public void deletarUsuario(@PathVariable UUID id){
         this.usuarioList.removeIf(usuario -> usuario.getUuid().equals(id));
     }
-
 }
