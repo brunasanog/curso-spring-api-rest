@@ -12,7 +12,6 @@ import java.util.*;
 @RequestMapping("/usuarios")
 public class UsuarioRestController {
 
-    private final List<Usuario> usuarioList = new ArrayList<>();
     private final UsuarioJpaRepository repository;
 
     public UsuarioRestController(UsuarioJpaRepository repository) {
@@ -54,12 +53,11 @@ public class UsuarioRestController {
         return this.repository.save(usuarioNovo);
     }
 
+    @Transactional
     @PatchMapping("/{uuid}/alterar-nome")
     public Usuario alterarNome (@PathVariable UUID uuid, @RequestBody Usuario usuarioAlterado){
-        Usuario usuario = this.buscarPorUuid(uuid);
-        usuario.setNome(usuarioAlterado.getNome());
-        this.usuarioList.set(this.usuarioList.indexOf(usuario), usuarioAlterado);
-        return usuarioAlterado;
+        this.repository.updateNome(uuid, usuarioAlterado.getNome());
+        return this.buscarPorUuid(uuid);
     }
 
     @Transactional
