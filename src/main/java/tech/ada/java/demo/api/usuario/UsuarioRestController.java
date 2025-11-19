@@ -2,8 +2,11 @@ package tech.ada.java.demo.api.usuario;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import tech.ada.java.demo.api.exception.NaoEncontradoException;
+
 
 import java.time.LocalDate;
 import java.util.*;
@@ -25,8 +28,8 @@ public class UsuarioRestController {
 
     //CRUD
     @GetMapping
-    public List<Usuario> listarTodos(){
-        return this.repository.findAll();
+    public Page<Usuario> listarTodos(Pageable pageable){
+        return this.repository.findAll(pageable);
     }
 
     @GetMapping("/{uuid}")
