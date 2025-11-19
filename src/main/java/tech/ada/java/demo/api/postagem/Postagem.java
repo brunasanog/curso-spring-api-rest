@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Postagem {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private UUID uuid;
